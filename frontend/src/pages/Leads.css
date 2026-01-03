@@ -1,0 +1,252 @@
+.leads-page {
+    padding: 30px;
+}
+
+.leads-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.leads-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-input,
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+.filter-input {
+    flex: 1;
+    min-width: 250px;
+}
+
+.filter-select {
+    min-width: 150px;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.leads-table-container {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.leads-table {
+    width: 100%;
+}
+
+.lead-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.lead-row:hover {
+    background-color: #f8fafc !important;
+}
+
+.company-cell {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.contact-cell {
+    font-size: 13px;
+}
+
+.contact-cell a {
+    display: block;
+    color: var(--primary);
+}
+
+.contact-cell p {
+    margin: 4px 0 0 0;
+    color: var(--text-secondary);
+}
+
+.status-select {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    background: white;
+}
+
+.status-select.status-new {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #bfdbfe;
+}
+
+.status-select.status-contacted {
+    background: #fce7f3;
+    color: #9f1239;
+    border-color: #fbcfe8;
+}
+
+.status-select.status-interested {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #bbf7d0;
+}
+
+.status-select.status-followup {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+.btn-icon:hover {
+    opacity: 1;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    background: #f1f5f9;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Form */
+.lead-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .leads-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .filter-input,
+    .filter-select {
+        width: 100%;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}

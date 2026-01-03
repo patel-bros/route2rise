@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: route2rise-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: route2rise
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: route2rise-backend
+    environment:
+      MONGODB_URL: mongodb://mongodb:27017
+      DATABASE_NAME: route2rise
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-your-secret-key-change-in-production}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRATION_HOURS: 24
+      FOUNDER_A_USERNAME: ${FOUNDER_A_USERNAME:-founder_a}
+      FOUNDER_A_PASSWORD: ${FOUNDER_A_PASSWORD:-password_a}
+      FOUNDER_B_USERNAME: ${FOUNDER_B_USERNAME:-founder_b}
+      FOUNDER_B_PASSWORD: ${FOUNDER_B_PASSWORD:-password_b}
+      CORS_ORIGINS: http://localhost:5173
+      DEBUG: false
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: route2rise-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  mongodb_data:
