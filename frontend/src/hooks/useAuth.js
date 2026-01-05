@@ -53,6 +53,8 @@ export const useAuth = () => {
         founder: data.founder,
         authenticated: true,
       });
+      // notify anyone listening immediately
+      window.dispatchEvent(new Event('auth-success'));
       
       return true;
     } catch (err) {

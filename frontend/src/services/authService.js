@@ -10,8 +10,11 @@ export const authService = {
       if (response.data && response.data.access_token) {
         console.log('Token received:', response.data.access_token.substring(0, 20) + '...');
         localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('founder', response.data.founder.username);
+        // founder is already a string from API
+        localStorage.setItem('founder', response.data.founder);
         console.log('Token stored in localStorage');
+        // Notify app about auth change
+        window.dispatchEvent(new Event('auth-success'));
       }
       return response.data;
     } catch (error) {

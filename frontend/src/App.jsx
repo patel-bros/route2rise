@@ -31,22 +31,23 @@ function App() {
     // Initial auth check
     checkAuth().then(() => setLoading(false));
 
-    // Recheck auth every 5 seconds to catch login state changes
-    const interval = setInterval(() => {
-      checkAuth();
-    }, 5000);
-
-    // Also listen for storage changes
+    // Listen for explicit auth success events and storage changes
+    const handleAuthSuccess = () => {
+      console.log('Auth success event received, setting authenticated');
+      setIsAuthenticated(true);
+    };
     const handleStorageChange = () => {
       console.log('Storage changed, rechecking auth...');
       checkAuth();
     };
 
+    window.addEventListener('auth-success', handleAuthSuccess);
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      clearInterval(interval);
+      // no interval now
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('auth-success', handleAuthSuccess);
     };
   }, []);
 
