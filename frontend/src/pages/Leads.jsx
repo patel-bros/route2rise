@@ -211,10 +211,24 @@ export const Leads = () => {
       }));
       
       // Force a refresh of the table
-      fetchLeads();
+      await fetchLeads();
     } catch (error) {
       console.error('Status change error:', error);
       showToast('Error updating status: ' + error.message);
+    }
+  };
+
+  const handleReminderChange = async (leadId, dateValue) => {
+    try {
+      const payload = dateValue ? { next_follow_up_date: dateValue } : { next_follow_up_date: null };
+      const updated = await leadService.updateLead(leadId, payload);
+      const updatedList = leads.map(l => l._id === leadId ? updated : l);
+      setLeads(updatedList);
+      setFilteredLeads(updatedList);
+      await fetchLeads();
+    } catch (error) {
+      console.error('Next reminder change error:', error);
+      showToast('Error updating next reminder: ' + error.message);
     }
   };
 
@@ -240,6 +254,8 @@ export const Leads = () => {
               mobile_number: '',
               full_address: '',
               source: '',
+              next_follow_up_date: '',
+              latest_reply_notes: '',
             });
             setShowNewLead(true);
           }}
@@ -293,7 +309,6 @@ export const Leads = () => {
                 <th>Status</th>
                 <th>Owner</th>
                 <th>Next Reminder</th>
-                <th>Remarks</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -320,22 +335,25 @@ export const Leads = () => {
                   </td>
                   <td>{lead.assigned_to}</td>
                   <td>
-                    {lead.next_follow_up_date 
-                      ? new Date(lead.next_follow_up_date).toLocaleDateString() 
-                      : '-'}
-                  </td>
-                  <td className="remarks-cell">
-                    {lead.latest_reply_notes ? (
-                      <span className="remarks-preview">
-                        {lead.latest_reply_notes.length > 30
-                          ? lead.latest_reply_notes.slice(0, 30) + '...'
-                          : lead.latest_reply_notes}
-                      </span>
-                    ) : (
-                      <span className="remarks-empty">No remarks</span>
-                    )}
+                    <input
+                      type="date"
+                      value={lead.next_follow_up_date ? lead.next_follow_up_date.split('T')[0] : ''}
+                      onChange={(e) => handleReminderChange(lead._id, e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                      onFocus={(e) => e.stopPropagation()}
+                      className="inline-date"
+                    />
                   </td>
                   <td className="actions-cell">
+                    <button
+                      className="btn-small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openRemarkModal(lead);
+                      }}
+                    >
+                      Remarks
+                    </button>
                     <button
                       className="btn-icon"
                       onClick={(e) => {
@@ -345,15 +363,6 @@ export const Leads = () => {
                       title="Delete"
                     >
                       🗑️
-                    </button>
-                    <button
-                      className="btn-small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openRemarkModal(lead);
-                      }}
-                    >
-                      Remarks
                     </button>
                   </td>
                 </tr>

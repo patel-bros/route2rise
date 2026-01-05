@@ -159,6 +159,13 @@
     display: flex;
     gap: 8px;
 }
+
+.inline-date {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+}
 .btn-small {
     padding: 4px 8px;
     font-size: 12px;

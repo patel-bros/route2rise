@@ -63,7 +63,7 @@ class LeadBase(BaseModel):
     last_contacted_date: Optional[datetime] = None
     latest_reply_notes: Optional[str] = None
     call_schedule_date: Optional[datetime] = None
-    next_follow_up_date: Optional[datetime] = None
+    next_follow_up_date: Optional[str] = None  # Accept date strings (YYYY-MM-DD)
 
     class Config:
         # Allow string inputs that match enum values
@@ -84,7 +84,7 @@ class LeadUpdate(BaseModel):
     last_contacted_date: Optional[datetime] = None
     latest_reply_notes: Optional[str] = None
     call_schedule_date: Optional[datetime] = None
-    next_follow_up_date: Optional[datetime] = None
+    next_follow_up_date: Optional[str] = None  # Accept date strings
 
     class Config:
         use_enum_values = False

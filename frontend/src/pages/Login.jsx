@@ -91,11 +91,7 @@ export const Login = () => {
         </form>
 
         <div className="login-footer">
-          <p>Demo Credentials</p>
-          <p className="demo-creds">
-            Founder A / Founder B<br/>
-            (Check .env.example for passwords)
-          </p>
+          
         </div>
       </div>
     </div>

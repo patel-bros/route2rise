@@ -10,7 +10,7 @@ export const authService = {
       if (response.data && response.data.access_token) {
         console.log('Token received:', response.data.access_token.substring(0, 20) + '...');
         localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('founder', response.data.founder);
+        localStorage.setItem('founder', response.data.founder.username);
         console.log('Token stored in localStorage');
       }
       return response.data;

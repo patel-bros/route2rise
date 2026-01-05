@@ -27,8 +27,8 @@ async def create_lead(
     """Create a new lead"""
     created_lead = await LeadService.create_lead(
         lead=lead,
-        created_by=user["founder"],
-        assigned_to=user["founder"]
+        created_by=user["username"],
+        assigned_to=user["username"]
     )
     
     return created_lead
