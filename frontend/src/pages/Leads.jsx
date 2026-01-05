@@ -78,6 +78,21 @@ export const Leads = () => {
 
   const handleCreateLead = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.company_name) {
+      alert('Please enter company name');
+      return;
+    }
+    if (!formData.sector) {
+      alert('Please select a sector');
+      return;
+    }
+    if (!formData.source) {
+      alert('Please select a source');
+      return;
+    }
+
     try {
       const newLead = await leadService.createLead(formData);
       setLeads([newLead, ...leads]);
@@ -93,7 +108,9 @@ export const Leads = () => {
       setShowNewLead(false);
       alert('Lead created successfully!');
     } catch (error) {
-      alert('Error creating lead: ' + error.message);
+      console.error('Error creating lead:', error);
+      const errorMsg = error.response?.data?.detail || error.message || 'Error creating lead';
+      alert('Error creating lead: ' + errorMsg);
     }
   };
 

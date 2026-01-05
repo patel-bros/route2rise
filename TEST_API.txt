@@ -1,0 +1,293 @@
+================================================================================
+ROUTE2RISE API TEST GUIDE
+================================================================================
+
+This guide provides curl commands to test all API endpoints. Run these after
+starting the backend server at http://localhost:8000
+
+PREREQUISITES:
+1. Backend running: python -m uvicorn app.main:app --reload
+2. MongoDB running: docker run -d -p 27017:27017 mongo:7.0
+3. .env file configured with FOUNDER_CREDENTIALS
+
+================================================================================
+STEP 1: AUTHENTICATION TESTS
+================================================================================
+
+--- Test Login (should return access_token) ---
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=founder1&password=your_password"
+
+Expected Response (200):
+{
+  "access_token": "eyJhbGc...",
+  "token_type": "bearer",
+  "founder": "Founder1"
+}
+
+SAVE THIS TOKEN for next tests!
+TOKEN=<paste_your_token_here>
+
+--- Test Verify Token ---
+curl -X GET http://localhost:8000/auth/verify \
+  -H "Authorization: Bearer $TOKEN"
+
+Expected Response (200):
+{
+  "founder": "Founder1",
+  "message": "Token is valid"
+}
+
+================================================================================
+STEP 2: LEAD CREATION TEST
+================================================================================
+
+--- Create a Lead (REQUIRED FIELDS ONLY) ---
+curl -X POST http://localhost:8000/leads \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_name": "Acme Corp",
+    "sector": "Technology",
+    "source": "LinkedIn"
+  }'
+
+Expected Response (200):
+{
+  "id": "507f1f77bcf86cd799439011",
+  "company_name": "Acme Corp",
+  "sector": "Technology",
+  "source": "LinkedIn",
+  "status": "NEW",
+  "website_url": null,
+  "email": null,
+  "mobile_number": null,
+  "full_address": null,
+  "created_by": "Founder1",
+  "assigned_to": "Founder1",
+  "created_at": "2024-01-15T10:30:00",
+  "updated_at": "2024-01-15T10:30:00"
+}
+
+SAVE THIS LEAD ID: LEAD_ID=507f1f77bcf86cd799439011
+
+--- Create a Lead (WITH ALL FIELDS) ---
+curl -X POST http://localhost:8000/leads \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_name": "TechStart Inc",
+    "sector": "SaaS",
+    "source": "Referral",
+    "website_url": "https://techstart.com",
+    "email": "contact@techstart.com",
+    "mobile_number": "+1-555-0123",
+    "full_address": "123 Tech Street, San Francisco, CA 94102"
+  }'
+
+Expected Response: Same structure, with all fields populated
+
+================================================================================
+STEP 3: LEAD RETRIEVAL TESTS
+================================================================================
+
+--- List All Leads ---
+curl -X GET "http://localhost:8000/leads" \
+  -H "Authorization: Bearer $TOKEN"
+
+Expected Response (200):
+{
+  "leads": [
+    {
+      "id": "...",
+      "company_name": "...",
+      ...
+    }
+  ],
+  "total": 2,
+  "skip": 0,
+  "limit": 50
+}
+
+--- Get Specific Lead ---
+curl -X GET "http://localhost:8000/leads/$LEAD_ID" \
+  -H "Authorization: Bearer $TOKEN"
+
+Expected Response: Lead details with full history
+
+--- List with Filters ---
+curl -X GET "http://localhost:8000/leads?sector=Technology&status=NEW&limit=10" \
+  -H "Authorization: Bearer $TOKEN"
+
+--- Search Leads ---
+curl -X GET "http://localhost:8000/leads?search=Acme" \
+  -H "Authorization: Bearer $TOKEN"
+
+================================================================================
+STEP 4: LEAD UPDATE TEST
+================================================================================
+
+--- Update Lead Status ---
+curl -X PUT "http://localhost:8000/leads/$LEAD_ID" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "CONTACTED",
+    "email": "newemail@acme.com"
+  }'
+
+Expected Response: Updated lead object
+
+Possible Status Values: NEW, CONTACTED, QUALIFIED, PROPOSAL_SENT, NEGOTIATING, WON, LOST
+
+================================================================================
+STEP 5: INTERACTION TRACKING TEST
+================================================================================
+
+--- Add Interaction/Note ---
+curl -X POST "http://localhost:8000/leads/$LEAD_ID/interaction" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d "action=CALL&notes=Initial discovery call - very interested"
+
+Expected Response:
+{
+  "message": "Interaction added",
+  "lead_id": "$LEAD_ID"
+}
+
+--- View Lead with Interactions ---
+curl -X GET "http://localhost:8000/leads/$LEAD_ID" \
+  -H "Authorization: Bearer $TOKEN"
+
+Response should show interaction_history array with your note
+
+================================================================================
+STEP 6: DASHBOARD STATISTICS TEST
+================================================================================
+
+--- Get Dashboard Stats ---
+curl -X GET "http://localhost:8000/leads/dashboard/stats" \
+  -H "Authorization: Bearer $TOKEN"
+
+Expected Response (200):
+{
+  "total_leads": 2,
+  "new_leads": 1,
+  "contacted_leads": 1,
+  "by_sector": {
+    "Technology": 1,
+    "SaaS": 1
+  },
+  "by_status": {
+    "NEW": 1,
+    "CONTACTED": 1
+  },
+  "upcoming_calls": [],
+  "recent_updates": [
+    {
+      "company_name": "...",
+      "action": "...",
+      "timestamp": "..."
+    }
+  ]
+}
+
+================================================================================
+STEP 7: ERROR HANDLING TESTS
+================================================================================
+
+--- Missing Required Field (should return 422) ---
+curl -X POST http://localhost:8000/leads \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "company_name": "Test Corp"
+  }'
+
+Expected Response (422):
+{
+  "detail": [
+    "sector: field required",
+    "source: field required"
+  ],
+  "message": "Validation failed. Please check the required fields: company_name, sector, source"
+}
+
+--- Invalid Token (should return 401) ---
+curl -X GET "http://localhost:8000/leads" \
+  -H "Authorization: Bearer invalid_token"
+
+Expected Response (401):
+{
+  "detail": "Invalid token"
+}
+
+--- Missing Authorization (should return 403) ---
+curl -X GET "http://localhost:8000/leads"
+
+Expected Response (403):
+{
+  "detail": "Not authenticated"
+}
+
+================================================================================
+QUICK TROUBLESHOOTING
+================================================================================
+
+1. 422 Unprocessable Entity
+   - Missing required fields: company_name, sector, source
+   - Email must be empty string or valid email (not invalid text)
+   - Sector/source must match enum values
+
+2. 401 Unauthorized
+   - Token expired or invalid
+   - Re-login with: POST /auth/login
+
+3. 404 Not Found
+   - Lead ID doesn't exist
+   - Check LEAD_ID is correct MongoDB ObjectId
+
+4. 500 Internal Server Error
+   - MongoDB not running
+   - Check MongoDB connection: mongosh or MongoDB Compass
+   - Check backend logs for detailed error
+
+5. Connection Refused
+   - Backend not running: python -m uvicorn app.main:app --reload
+   - Check if port 8000 is in use: netstat -an | find ":8000"
+
+================================================================================
+REQUIRED FIELD VALUES
+================================================================================
+
+Sectors (pick one):
+  - Healthcare, Real Estate, SaaS, Education, E-commerce, Finance,
+    Manufacturing, Retail, Hospitality, Restaurant, Technology, Other
+
+Statuses (pick one):
+  - NEW, CONTACTED, QUALIFIED, PROPOSAL_SENT, NEGOTIATING, WON, LOST
+
+Sources (pick one):
+  - LinkedIn, Referral, Cold_Call, Website, Conference, Other
+
+Interaction Actions (pick one):
+  - CALL, EMAIL, MEETING, NOTE, PROPOSAL_SENT, DEAL_WON, DEAL_LOST
+
+================================================================================
+TESTING WORKFLOW
+================================================================================
+
+1. Login and save TOKEN
+2. Create lead with required fields only
+3. Save LEAD_ID from response
+4. Retrieve lead (GET /{lead_id})
+5. Update lead status
+6. Add interaction
+7. List leads with filters
+8. Check dashboard stats
+9. Test error cases
+
+All tests passing? Great! The API is working correctly.
+
+================================================================================

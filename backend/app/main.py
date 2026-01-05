@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from contextlib import asynccontextmanager
 from app.config import settings
 from app.database.mongo import connect_db, disconnect_db
@@ -35,6 +37,27 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+# Custom validation error handler for better error messages
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle validation errors with better error messages"""
+    errors = exc.errors()
+    error_details = []
+    
+    for error in errors:
+        field = " -> ".join(str(x) for x in error["loc"][1:])  # Skip "body"
+        error_details.append(f"{field}: {error['msg']}")
+    
+    logger.error(f"Validation error: {error_details}")
+    
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": error_details,
+            "message": "Validation failed. Please check the required fields: company_name, sector, source"
+        }
+    )
 
 # Configure CORS
 app.add_middleware(

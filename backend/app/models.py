@@ -55,7 +55,7 @@ class LeadBase(BaseModel):
     company_name: str
     sector: SectorEnum
     website_url: Optional[str] = None
-    email: Optional[EmailStr] = None
+    email: Optional[str] = None  # Changed from EmailStr to allow empty strings
     mobile_number: Optional[str] = None
     full_address: Optional[str] = None
     source: SourceEnum
@@ -64,6 +64,10 @@ class LeadBase(BaseModel):
     latest_reply_notes: Optional[str] = None
     call_schedule_date: Optional[datetime] = None
     next_follow_up_date: Optional[datetime] = None
+
+    class Config:
+        # Allow string inputs that match enum values
+        use_enum_values = False
 
 class LeadCreate(LeadBase):
     pass
