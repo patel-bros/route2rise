@@ -124,6 +124,13 @@
     overflow: hidden;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
     border: 4px solid var(--border);
+    /* Allow scroll without showing default scrollbars */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.leads-table-container::-webkit-scrollbar {
+    display: none;
 }
 
 .leads-table {

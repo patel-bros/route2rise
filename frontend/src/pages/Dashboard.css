@@ -1,6 +1,13 @@
 .dashboard {
     padding: 30px;
     background: linear-gradient(135deg, rgba(0, 217, 255, 0.02) 0%, rgba(255, 16, 240, 0.02) 100%);
+    /* Hide scrollbars while allowing scroll */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.dashboard::-webkit-scrollbar {
+    display: none;
 }
 
 .dashboard h1 {
