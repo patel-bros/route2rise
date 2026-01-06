@@ -412,14 +412,16 @@ export const Leads = () => {
                       Remarks
                     </button>
                     <button
-                      className="btn-icon"
+                      className="btn-icon btn-delete"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteLead(lead._id);
                       }}
                       title="Delete"
                     >
-                      🗑️
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 3.5H13M5.5 1H8.5M5.5 6V11M8.5 6V11M2 3.5L3 12.5C3 12.7761 3.22386 13 3.5 13H10.5C10.7761 13 11 12.7761 11 12.5L12 3.5H2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     </button>
                   </td>
                 </tr>

@@ -312,6 +312,31 @@
     opacity: 1;
 }
 
+.btn-delete {
+    background: #ff1744;
+    color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 6px 8px;
+    opacity: 1;
+    transition: all 250ms ease;
+    box-shadow: 2px 2px 0px #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-delete:hover {
+    background: #d50000;
+}
+
+.btn-delete svg {
+    width: 14px;
+    height: 14px;
+}
+
 .empty-state {
     text-align: center;
     padding: 60px 40px;
@@ -592,6 +617,22 @@
         font-size: 11px;
         padding: 3px 4px;
         margin-left: auto;
+    }
+
+    .btn-delete {
+        font-size: 9px;
+        padding: 4px 6px;
+        border-radius: 6px;
+        box-shadow: 1px 1px 0px #000000;
+    }
+
+    .btn-delete:hover {
+        background: #d50000;
+    }
+
+    .btn-delete svg {
+        width: 12px;
+        height: 12px;
     }
 
     .toast {
