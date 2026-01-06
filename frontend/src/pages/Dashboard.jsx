@@ -65,6 +65,15 @@ export const Dashboard = () => {
                 today.setHours(0, 0, 0, 0);
                 const dateVal = lead.next_follow_up_date ? new Date(lead.next_follow_up_date) : null;
                 const isOverdue = dateVal && dateVal < today;
+                
+                const formatDate = (date) => {
+                  if (!date) return '-';
+                  const d = new Date(date);
+                  const day = String(d.getDate()).padStart(2, '0');
+                  const month = String(d.getMonth() + 1).padStart(2, '0');
+                  const year = d.getFullYear();
+                  return `${day}/${month}/${year}`;
+                };
 
                 return (
                   <div key={lead._id} className="lead-item">
@@ -73,7 +82,7 @@ export const Dashboard = () => {
                       <p>{lead.sector}</p>
                     </div>
                     <div className={`call-date ${isOverdue ? 'call-date-overdue' : ''}`}>
-                      {lead.next_follow_up_date ? new Date(lead.next_follow_up_date).toLocaleDateString() : '-'}
+                      {formatDate(lead.next_follow_up_date)}
                     </div>
                   </div>
                 );
