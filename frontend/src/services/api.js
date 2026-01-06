@@ -1,8 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://api.route2rise.com'
-  : 'http://localhost:8000';
+// Allow backend URL to be configured via Vite env (fallback to local dev)
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').trim();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -29,5 +28,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+ 
+export { API_BASE_URL };
 export default api;

@@ -1,9 +1,9 @@
-import api from './api';
+import api, { API_BASE_URL } from './api';
 
 export const authService = {
   login: async (username, password) => {
     try {
-      console.log('Sending login request to:', process.env.NODE_ENV === 'production' ? 'https://api.route2rise.com' : 'http://localhost:8000');
+      console.log('Sending login request to:', API_BASE_URL);
       const response = await api.post('/auth/login', { username, password });
       console.log('Login response:', response.data);
       

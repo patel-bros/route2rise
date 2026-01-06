@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { API_BASE_URL } from '../services/api';
 import './Login.css';
 
 export const Login = () => {
@@ -38,7 +39,7 @@ export const Login = () => {
       }
     } catch (err) {
       console.error('Submit error:', err);
-      setLocalError(error || 'Login failed. Is the backend running on http://localhost:8000?');
+      setLocalError(error || `Login failed. Is the backend running on ${API_BASE_URL}?`);
     }
   };
 
