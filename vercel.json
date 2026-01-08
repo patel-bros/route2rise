@@ -1,20 +1,10 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "routes": [
+  "rewrites": [
     {
-      "src": "^/assets/.*",
-      "dest": "/$0",
-      "continue": true
-    },
-    {
-      "src": "^/index\\.html$",
-      "dest": "/index.html"
-    },
-    {
-      "src": "^/.*",
-      "dest": "/index.html",
-      "status": 200
+      "source": "/:path((?!assets).*)",
+      "destination": "/index.html"
     }
   ]
 }
