@@ -43,12 +43,26 @@ export const Dashboard = () => {
 
       <div className="stats-grid">
         <div className="stat-card">
+          <div className="shimmer"></div>
+          <div className="particles">
+            <div className="particle"></div>
+            <div className="particle"></div>
+            <div className="particle"></div>
+            <div className="particle"></div>
+          </div>
           <div className="stat-value">{stats.total_leads}</div>
           <div className="stat-label">Total Leads</div>
         </div>
 
         {Object.entries(stats.leads_by_status).map(([status, count]) => (
           <div key={status} className="stat-card">
+            <div className="shimmer"></div>
+            <div className="particles">
+              <div className="particle"></div>
+              <div className="particle"></div>
+              <div className="particle"></div>
+              <div className="particle"></div>
+            </div>
             <div className="stat-value">{count}</div>
             <div className="stat-label">{status}</div>
           </div>
