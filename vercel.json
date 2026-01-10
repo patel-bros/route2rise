@@ -1,0 +1,10 @@
+{
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/:path((?!_next/static/|_next/image/|favicon.ico).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
