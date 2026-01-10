@@ -1,10 +1,22 @@
 {
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": "dist",
-  "rewrites": [
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/:path((?!_next/static/|_next/image/|favicon.ico).*)",
-      "destination": "/index.html"
+      "src": "^/assets/.*",
+      "dest": "/$0",
+      "continue": true
+    },
+    {
+      "src": "^/index\\.html$",
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/.*",
+      "dest": "/index.html",
+      "status": 200
     }
   ]
 }
